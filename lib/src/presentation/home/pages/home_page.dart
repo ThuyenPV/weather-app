@@ -6,6 +6,7 @@ import '../../../utils/uidata.dart';
 import '../../shared/widgets/auto_hide_keyboard.dart';
 import '../bloc/home_bloc.dart';
 import '../widgets/history_search_weather_item_widget.dart';
+import '../widgets/microphone_widget.dart';
 import '../widgets/search_textfield_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -28,41 +29,66 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           title: const Text('Weather'),
           elevation: 0,
-          bottom: const PreferredSize(
-            preferredSize: Size.fromHeight(66),
-            child: SearchTextFieldWidget(),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(66),
+            child: BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                if (state is AddMicrophoneAudioSuccess) {
+                  return SearchTextFieldWidget(
+                    initialValue: state.audioText,
+                  );
+                }
+                return const SearchTextFieldWidget(
+                  initialValue: '',
+                );
+              },
+            ),
           ),
         ),
-        body: BlocBuilder<HomeBloc, HomeState>(
-          builder: (context, state) {
-            if (state is AddSearchHistorySuccess) {
-              final lists = state.weathers;
-              return ListView.builder(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 60),
-                itemBuilder: (context, index) {
-                  return HistorySearchWeatherItemWidget(
-                    weather: lists[index],
+        body: Stack(
+          children: [
+            BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                if (state is AddSearchHistorySuccess ||
+                    state is AddMicrophoneAudioSuccess) {
+                  final lists = state.weathers;
+                  return ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 60),
+                    itemBuilder: (context, index) {
+                      return HistorySearchWeatherItemWidget(
+                        weather: lists[index],
+                      );
+                    },
+                    itemCount: lists.length,
                   );
-                },
-                itemCount: lists.length,
-              );
-            }
-            return Center(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(UIData.welcome),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                  child: Text(
-                    'Search history will show here\n(only location is founded)',
-                    style: context.textTheme.titleLarge,
-                    textAlign: TextAlign.center,
+                }
+                return Container(
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.only(bottom: 64),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(UIData.welcome),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                        child: Text(
+                          'Search history will show here\n(only location is founded)',
+                          style: context.textTheme.titleLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ));
-          },
+                );
+              },
+            ),
+            const Positioned(
+              left: 0,
+              right: 0,
+              bottom: 48,
+              child: MicrophoneWidget(),
+            ),
+          ],
         ),
       ),
     );

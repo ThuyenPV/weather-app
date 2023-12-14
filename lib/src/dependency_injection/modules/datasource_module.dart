@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/configurations/configurations.dart';
-import '../../networking/networking_factory.dart';
+import '../../source/networking/networking_factory.dart';
 
 @module
 abstract class DatasourceModule {

@@ -5,14 +5,33 @@ import '../../../utils/app_colors.dart';
 import '../home_coordinator.dart';
 
 class SearchTextFieldWidget extends StatefulWidget {
-  const SearchTextFieldWidget({super.key});
+  const SearchTextFieldWidget({
+    super.key,
+    required this.initialValue,
+  });
+
+  final String initialValue;
 
   @override
   State<SearchTextFieldWidget> createState() => _SearchTextFieldWidgetState();
 }
 
 class _SearchTextFieldWidgetState extends State<SearchTextFieldWidget> {
-  final _searchCtrl = TextEditingController();
+  late TextEditingController _searchCtrl;
+
+  @override
+  void initState() {
+    _searchCtrl = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant SearchTextFieldWidget oldWidget) {
+    if (widget.initialValue.isNotEmpty) {
+      _searchCtrl.text = widget.initialValue;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
 
   @override
   void dispose() {

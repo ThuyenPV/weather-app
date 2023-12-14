@@ -7,3 +7,9 @@ final class AddSearchHistoryResultEvent extends HomeEvent {
 
   AddSearchHistoryResultEvent(this.weather);
 }
+
+final class AddMicrophoneAudioEvent extends HomeEvent {
+  final String audioText;
+
+  AddMicrophoneAudioEvent(this.audioText);
+}
